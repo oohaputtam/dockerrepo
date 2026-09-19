@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Foodie Express · food delivery</title>
+  <!-- Font Awesome (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #f8f9fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    /* main app card */
+    .app-container {
+      max-width: 1200px;
+      width: 100%;
+      background: white;
+      border-radius: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    /* header / top bar */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.75rem;
+      background: white;
+      border-bottom: 1px solid #eef2f6;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+      color: #1e2b3c;
+    }
+
+    .logo i {
+      color: #ff6b35;
+      font-size: 1.8rem;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f0f4fa;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      color: #2f3e4e;
+      font-weight: 500;
+    }
+
+    .location i {
+      color: #ff6b35;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 1.2rem;
+      color: #4b5b6b;
+      font-size: 1.3rem;
+    }
+
+    .header-icons i {
+      cursor: default;
+      transition: color 0.1s;
+    }
+
+    .header-icons i:hover {
+      color: #ff6b35;
+    }
+
+    /* search bar */
+    .search-section {
+      padding: 1.25rem 1.75rem 0.75rem;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      background: #f2f6fc;
+      border-radius: 60px;
+      padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+      border: 1px solid #e2e9f2;
+    }
+
+    .search-wrapper i {
+      color: #7b8a9b;
+      font-size: 1.1rem;
+    }
+
+    .search-wrapper input {
+      border: none;
+      background: transparent;
+      flex: 1;
+      padding: 0.8rem 0.8rem;
+      font-size: 1rem;
+      outline: none;
+      color: #1e2b3c;
+    }
+
+    .search-wrapper input::placeholder {
+      color: #8d9aa8;
+      font-weight: 400;
+    }
+
+    .search-wrapper button {
+      background: #ff6b35;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.8rem 1.8rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      cursor: default;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s;
+    }
+
+    .search-wrapper button i {
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    /* categories chips */
+    .categories {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.75rem 1.75rem 1.25rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      white-space: nowrap;
+      flex-wrap: nowrap;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      background: #f2f6fc;
+      padding: 0.6rem 1.3rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #2f3e4e;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: default;
+      transition: all 0.1s;
+      border: 1px solid transparent;
+    }
+
+    .chip i {
+      color: #ff6b35;
+      font-size: 0.9rem;
+    }
+
+    .chip.active {
+      background: #ff6b35;
+      color: white;
+      border-color: #ff6b35;
+    }
+
+    .chip.active i {
+      color: white;
+    }
+
+    /* main grid — restaurants */
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 1.5rem;
+      padding: 0.5rem 1.75rem 1.75rem;
+    }
+
+    /* restaurant card */
+    .restaurant-card {
+      background: white;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #eef2f6;
+      transition: transform 0.15s ease, box-shadow 0.2s;
+      cursor: default;
+    }
+
+    .restaurant-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 30px -10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-image {
+      height: 150px;
+      background: linear-gradient(135deg, #ffe8df, #ffd9cc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      color: #ff6b35;
+      position: relative;
+    }
+
+    /* decorative badge */
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: white;
+      padding: 0.3rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1e2b3c;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .badge i {
+      color: #ffb800;
+      font-size: 0.7rem;
+    }
+
+    .card-content {
+      padding: 1rem 1.2rem 1.2rem;
+    }
+
+    .restaurant-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #1e2b3c;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rating {
+      background: #eef7e6;
+      padding: 0.2rem 0.7rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2c6e2c;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .rating i {
+      color: #f8b84a;
+      font-size: 0.7rem;
+    }
+
+    .cuisine {
+      color: #677a8c;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .details {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.9rem;
+      color: #4b5b6b;
+      font-size: 0.85rem;
+      border-top: 1px solid #f0f4fa;
+      padding-top: 0.9rem;
+    }
+
+    .delivery-time, .price-range {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .delivery-time i, .price-range i {
+      color: #ff6b35;
+      font-size: 0.8rem;
+    }
+
+    /* small footer / promo */
+    .promo-banner {
+      margin: 0 1.75rem 1.75rem;
+      background: linear-gradient(105deg, #ff6b35 0%, #ff8f5e 100%);
+      border-radius: 1.5rem;
+      padding: 1rem 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .promo-text h3 {
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.3px;
+    }
+
+    .promo-text p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      margin-top: 0.2rem;
+    }
+
+    .promo-code {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 0.5rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      border: 1px dashed rgba(255, 255, 255, 0.8);
+      cursor: default;
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .header {
+        padding: 1rem;
+      }
+      .logo {
+        font-size: 1.2rem;
+      }
+      .logo i {
+        font-size: 1.5rem;
+      }
+      .location span {
+        display: none;
+      }
+      .location {
+        padding: 0.6rem 1rem;
+      }
+      .search-section,
+      .categories,
+      .restaurant-grid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .promo-banner {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        flex-direction: column;
+        text-align: center;
+      }
+      .search-wrapper button span {
+        display: none;
+      }
+      .search-wrapper button {
+        padding: 0.8rem 1.2rem;
+      }
+      .search-wrapper button i {
+        font-size: 1rem;
+      }
+    }
+
+    /* small screens: 1 column */
+    @media (max-width: 480px) {
+      .restaurant-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- top navigation -->
+    <header class="header">
+      <div class="logo">
+        <i class="fas fa-utensils"></i>
+        <span>Foodie<span style="color: #ff6b35;">Express</span></span>
+      </div>
+      <div class="location">
+        <i class="fas fa-map-pin"></i>
+        <span>Home · </span><span style="font-weight: 400;">Sector 62</span>
+        <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 0.2rem;"></i>
+      </div>
+      <div class="header-icons">
+        <i class="far fa-heart"></i>
+        <i class="far fa-user-circle"></i>
+        <i class="fas fa-shopping-bag"></i>
+      </div>
+    </header>
+
+    <!-- search bar -->
+    <div class="search-section">
+      <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search for restaurants, cuisines, or dishes..." value="Pizza">
+        <button>
+          <i class="fas fa-sliders-h"></i>
+          <span>Filter</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- category chips -->
+    <div class="categories">
+      <div class="chip active"><i class="fas fa-fire"></i> Popular</div>
+      <div class="chip"><i class="fas fa-pizza-slice"></i> Pizza</div>
+      <div class="chip"><i class="fas fa-hamburger"></i> Burgers</div>
+      <div class="chip"><i class="fas fa-fish"></i> Sushi</div>
+      <div class="chip"><i class="fas fa-coffee"></i> Cafe</div>
+      <div class="chip"><i class="fas fa-leaf"></i> Vegan</div>
+      <div class="chip"><i class="fas fa-ice-cream"></i> Dessert</div>
+    </div>
+
+    <!-- restaurant cards grid -->
+    <div class="restaurant-grid">
+      <!-- card 1 -->
+      <div class="restaurant-card">
+        <div class="card-image">
+          🍕
+          <div class="badge"><i class="fas fa-star"></i> 4.8</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">
+            Napoli Pizza
+            <span class="rating"><i class="fas fa-star"></i> 4.8</span>
+          </div>
+          <div class="cuisine">Italian · Pizza · $$</div>
+          <div class="details">
+            <span class="delivery-time"><i class="far fa-clock"></i> 20–30 min</span>
+            <span class="price-range"><i class="fas fa-motorcycle"></i> Free</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 2 -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background: linear-gradient(135deg, #fde6d2, #fcd1b0);">
+          🍔
+          <div class="badge"><i class="fas fa-star"></i> 4.7</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">
+            Burger Craft
+            <span class="rating"><i class="fas fa-star"></i> 4.7</span>
+          </div>
+          <div class="cuisine">American · Burgers · $$</div>
+          <div class="details">
+            <span class="delivery-time"><i class="far fa-clock"></i> 15–25 min</span>
+            <span class="price-range"><i class="fas fa-motorcycle"></i> Free</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- card 3 -->
+      <div class="restaurant-card">
+        <div class="card-image" style="background: linear-gradient(135deg, #d9e8f5, #c2d9ec);">
+          🍣
+          <div class="badge"><i class="fas fa-star"></i> 4.9</div>
+        </div>
+        <div class="card-content">
+          <div class="restaurant-name">
+            Sakura Sushi
+            <span class="rating"><i class="fas fa-star"></i> 4.9</span>
+          </div>
+          <div class="cuisine">Japanese · Sushi · $$$</div>
+          <div class="details">
+            <span class="delivery-time"><i class="far fa-clock"></i> 25–35 min</span>
+            <span class="price-range"><i class="fas fa-motorcycle"></i> $1.99</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- promo / offer banner -->
+    <div class="promo-banner">
+      <div class="promo-text">
+        <h3>🎉 50% OFF up to $10</h3>
+        <p>On your first order · Use code below</p>
+      </div>
+      <div class="promo-code">FOODIE50</div>
+    </div>
+  </div>
+</body>
+</html>
